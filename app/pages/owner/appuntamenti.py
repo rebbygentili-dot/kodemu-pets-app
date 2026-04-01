@@ -8,7 +8,7 @@ from app.auth.supabase_auth import get_current_profile
 from app.services.animali_service import get_animali_by_owner
 from app.services.appuntamenti_service import (
     get_appuntamenti_owner, crea_appuntamento, elimina_appuntamento,
-    STATI_LABEL,
+    ha_appuntamento_attivo, STATI_LABEL,
 )
 from app.services.collegamenti_service import get_collegamenti_owner
 from app.components.ui_helpers import format_datetime, render_badge, empty_state, icona_specie
@@ -116,6 +116,11 @@ def _form_nuovo_appuntamento(owner_id: str):
             return
 
         data_ora = datetime.combine(data_app, ora_app).isoformat()
+
+        if ha_appuntamento_attivo(owner_id, vet_id, animale_id, data_ora):
+            st.warning("⚠️ Hai già un appuntamento in attesa o confermato per questo animale, veterinario e orario.")
+            return
+
         ok = crea_appuntamento({
             "owner_id": owner_id,
             "vet_id": vet_id,

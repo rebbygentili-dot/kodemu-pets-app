@@ -22,6 +22,7 @@ def get_appuntamenti_owner(owner_id: str, futuro: bool = True) -> list:
         supabase.table("appuntamenti")
         .select("*, animali!animale_id(nome, specie), profiles!vet_id(nome, cognome)")
         .eq("owner_id", owner_id)
+        .neq("stato", "annullato")
         .order("data_ora")
     )
     if futuro:
@@ -42,6 +43,23 @@ def get_appuntamenti_vet(vet_id: str, data_da: str = None, data_a: str = None) -
     if data_a:
         query = query.lte("data_ora", data_a)
     return query.execute().data or []
+
+
+def ha_appuntamento_attivo(owner_id: str, vet_id: str, animale_id: str, data_ora: str) -> bool:
+    """Restituisce True se esiste già un appuntamento non annullato per stessa combo."""
+    supabase = get_supabase()
+    result = (
+        supabase.table("appuntamenti")
+        .select("id")
+        .eq("owner_id", owner_id)
+        .eq("vet_id", vet_id)
+        .eq("animale_id", animale_id)
+        .eq("data_ora", data_ora)
+        .neq("stato", "annullato")
+        .limit(1)
+        .execute()
+    )
+    return bool(result.data)
 
 
 def crea_appuntamento(data: dict) -> dict | None:
