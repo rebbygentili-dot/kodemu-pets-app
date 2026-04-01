@@ -208,24 +208,24 @@ CREATE POLICY "animali_vet_linked_read" ON public.animali
     );
 
 -- ── VACCINAZIONI
-CREATE POLICY "vaccinazioni_owner" ON public.vaccinazioni
-    FOR ALL USING (
+-- Owner: solo lettura
+CREATE POLICY "vaccinazioni_owner_read" ON public.vaccinazioni
+    FOR SELECT USING (
         animale_id IN (SELECT id FROM public.animali WHERE owner_id = auth.uid())
     );
-
-CREATE POLICY "vaccinazioni_vet_read" ON public.vaccinazioni
-    FOR SELECT USING (
+-- Vet: gestione completa
+CREATE POLICY "vaccinazioni_vet_all" ON public.vaccinazioni
+    FOR ALL USING (
         animale_id IN (SELECT id FROM public.animali WHERE vet_id = auth.uid())
     );
 
 -- ── TERAPIE
-CREATE POLICY "terapie_owner" ON public.terapie
-    FOR ALL USING (
+CREATE POLICY "terapie_owner_read" ON public.terapie
+    FOR SELECT USING (
         animale_id IN (SELECT id FROM public.animali WHERE owner_id = auth.uid())
     );
-
-CREATE POLICY "terapie_vet_read" ON public.terapie
-    FOR SELECT USING (
+CREATE POLICY "terapie_vet_all" ON public.terapie
+    FOR ALL USING (
         animale_id IN (SELECT id FROM public.animali WHERE vet_id = auth.uid())
     );
 
@@ -246,11 +246,10 @@ CREATE POLICY "cartelle_owner_read" ON public.cartelle_cliniche
     );
 
 -- ── DOCUMENTI
-CREATE POLICY "documenti_owner" ON public.documenti
-    FOR ALL USING (owner_id = auth.uid());
-
-CREATE POLICY "documenti_vet_read" ON public.documenti
-    FOR SELECT USING (
+CREATE POLICY "documenti_owner_read" ON public.documenti
+    FOR SELECT USING (owner_id = auth.uid());
+CREATE POLICY "documenti_vet_all" ON public.documenti
+    FOR ALL USING (
         animale_id IN (SELECT id FROM public.animali WHERE vet_id = auth.uid())
     );
 

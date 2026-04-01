@@ -110,3 +110,9 @@ def aggiorna_terapia(terapia_id: str, data: dict) -> bool:
 
 def termina_terapia(terapia_id: str) -> bool:
     return aggiorna_terapia(terapia_id, {"attiva": False, "data_fine": date.today().isoformat()})
+
+
+def elimina_terapia(terapia_id: str) -> bool:
+    supabase = get_supabase()
+    result = supabase.table("terapie").delete().eq("id", terapia_id).execute()
+    return bool(result.data)

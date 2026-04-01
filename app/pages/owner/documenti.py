@@ -1,13 +1,12 @@
 """
 pages/owner/documenti.py
-Upload e gestione documenti (referti, ricette, fatture…).
+Visualizzazione documenti (referti, ricette, fatture…) in sola lettura.
 """
 import streamlit as st
 from app.auth.supabase_auth import get_current_profile
 from app.services.animali_service import get_animali_by_owner
 from app.services.documenti_service import (
-    get_documenti, upload_documento, elimina_documento,
-    get_url_documento, TIPI_DOCUMENTO,
+    get_documenti, get_url_documento,
 )
 from app.components.ui_helpers import format_datetime, empty_state, icona_specie
 
@@ -39,46 +38,11 @@ def show():
 
     st.divider()
 
-    # ── Upload ────────────────────────────────────────────────────────────────
-    with st.expander("📤 Carica nuovo documento", expanded=False):
-        with st.form("form_upload"):
-            file = st.file_uploader(
-                "Seleziona file (PDF o immagine)",
-                type=["pdf", "jpg", "jpeg", "png", "webp"],
-                help="Max 25 MB"
-            )
-            col1, col2 = st.columns(2)
-            with col1:
-                tipo = st.selectbox("Tipo documento", TIPI_DOCUMENTO)
-            with col2:
-                note = st.text_input("Note (opzionale)")
-            sub = st.form_submit_button("📤 Carica", type="primary", use_container_width=True)
-
-        if sub:
-            if not file:
-                st.error("Seleziona un file.")
-            else:
-                with st.spinner("Caricamento in corso…"):
-                    risultato = upload_documento(
-                        file_bytes=file.read(),
-                        filename=file.name,
-                        content_type=file.type,
-                        animale_id=sel_id,
-                        tipo=tipo,
-                        note=note,
-                        owner_id=owner_id,
-                    )
-                if risultato:
-                    st.success(f"✅ Documento '{file.name}' caricato!")
-                    st.rerun()
-                else:
-                    st.error("Errore nel caricamento.")
-
     # ── Lista documenti ───────────────────────────────────────────────────────
     documenti = get_documenti(sel_id)
 
     if not documenti:
-        empty_state("📁", "Nessun documento", "Carica referti, ricette o altri file dal pannello sopra.")
+        empty_state("📁", "Nessun documento", "Il veterinario non ha ancora caricato documenti per questo animale.")
         return
 
     # Filtro per tipo
@@ -90,7 +54,7 @@ def show():
             continue
         icona = ICONE_TIPO.get(doc.get("tipo", "Altro"), "📎")
 
-        col1, col2, col3 = st.columns([4, 2, 1])
+        col1, col2 = st.columns([5, 2])
         with col1:
             st.markdown(
                 f"{icona} **{doc.get('nome_file','')}**  \n"
@@ -105,8 +69,4 @@ def show():
             url = get_url_documento(doc.get("storage_path", ""))
             if url:
                 st.link_button("⬇️ Scarica", url)
-        with col3:
-            if st.button("🗑️", key=f"del_doc_{doc['id']}", help="Elimina documento"):
-                elimina_documento(doc["id"], doc.get("storage_path", ""))
-                st.rerun()
         st.divider()
