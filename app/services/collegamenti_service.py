@@ -7,6 +7,19 @@ from app.services.supabase_client import get_supabase, get_supabase_admin
 STATI = ["pending", "accepted", "rejected"]
 
 
+def get_tutti_vet() -> list:
+    """Restituisce tutti i veterinari registrati sulla piattaforma."""
+    supabase = get_supabase()
+    result = (
+        supabase.table("profiles")
+        .select("id, nome, cognome, clinica, telefono, email")
+        .eq("ruolo", "vet")
+        .order("cognome")
+        .execute()
+    )
+    return result.data or []
+
+
 def cerca_vet_per_nome(nome: str) -> list:
     """Cerca veterinari registrati per nome/cognome (ricerca fuzzy sul campo nome+cognome)."""
     supabase = get_supabase()

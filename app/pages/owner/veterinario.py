@@ -3,10 +3,11 @@ pages/owner/veterinario.py
 Gestione collegamento con il veterinario.
 """
 import streamlit as st
+import pandas as pd
 from app.auth.supabase_auth import get_current_profile
 from app.services.collegamenti_service import (
     cerca_vet_per_nome, invia_richiesta_collegamento,
-    get_collegamenti_owner, invita_vet_via_email,
+    get_collegamenti_owner, invita_vet_via_email, get_tutti_vet,
 )
 from app.services.listino_service import get_listino_owner
 from app.components.ui_helpers import render_badge, empty_state, divisore
@@ -60,47 +61,74 @@ def show():
                                     st.markdown(f"**€ {v.get('prezzo', 0):.2f}**")
         divisore()
 
-    # ── Cerca veterinario ─────────────────────────────────────────────────────
-    st.markdown("### 🔍 Cerca e collega un veterinario")
+    # ── Tutti i veterinari disponibili ───────────────────────────────────────
+    st.markdown("### 🏥 Veterinari disponibili sulla piattaforma")
 
-    ricerca = st.text_input("Cerca per cognome del veterinario", placeholder="es. Rossi")
+    tutti_vet = get_tutti_vet()
+    if not tutti_vet:
+        empty_state("🩺", "Nessun veterinario registrato", "Non ci sono ancora veterinari sulla piattaforma.")
+    else:
+        id_collegati = {c["vet_id"] for c in collegamenti}
 
-    if ricerca:
-        risultati = cerca_vet_per_nome(ricerca)
-        if not risultati:
-            st.info("Nessun veterinario trovato con quel cognome.")
-            st.markdown("**Il tuo veterinario non è ancora registrato?**")
-            with st.form("form_invito"):
-                email_invito = st.text_input("Email del veterinario", placeholder="vet@clinica.it")
-                sub_invito = st.form_submit_button("📧 Invia invito", type="primary")
-            if sub_invito:
-                if not email_invito:
-                    st.error("Inserisci l'email.")
-                else:
-                    ok, err = invita_vet_via_email(email_invito)
-                    if ok:
-                        st.success(f"✅ Invito inviato a {email_invito}!")
-                    else:
-                        st.error(f"Errore nell'invio dell'invito: {err}")
-        else:
-            for vet in risultati:
+        # Tabella pandas
+        df = pd.DataFrame([
+            {
+                "Nome":     f"{v.get('nome','')} {v.get('cognome','')}",
+                "Clinica":  v.get("clinica") or "—",
+                "Telefono": v.get("telefono") or "—",
+                "Email":    v.get("email", ""),
+                "Stato":    "✅ Collegato" if v["id"] in id_collegati else "—",
+            }
+            for v in tutti_vet
+        ])
+
+        st.dataframe(
+            df,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "Nome":     st.column_config.TextColumn("🩺 Veterinario"),
+                "Clinica":  st.column_config.TextColumn("🏥 Clinica"),
+                "Telefono": st.column_config.TextColumn("📞 Telefono"),
+                "Email":    st.column_config.TextColumn("📧 Email"),
+                "Stato":    st.column_config.TextColumn("Collegamento"),
+            },
+        )
+
+        # Bottoni collegamento per vet non ancora collegati
+        non_collegati = [v for v in tutti_vet if v["id"] not in id_collegati]
+        if non_collegati:
+            divisore("🔗 Richiedi collegamento")
+            for vet in non_collegati:
                 vet_id = vet["id"]
-                # Controlla se già collegato
-                gia_collegato = any(c["vet_id"] == vet_id for c in collegamenti)
                 col1, col2 = st.columns([3, 1])
                 with col1:
                     st.markdown(
-                        f"**🩺 {vet.get('nome','')} {vet.get('cognome','')}**  \n"
-                        f"{vet.get('clinica') or ''} · {vet.get('email','')}"
+                        f"**{vet.get('nome','')} {vet.get('cognome','')}**"
+                        f"{' — ' + vet.get('clinica') if vet.get('clinica') else ''}"
                     )
                 with col2:
-                    if gia_collegato:
-                        st.markdown("✅ Già collegato")
-                    else:
-                        if st.button("🔗 Richiedi collegamento", key=f"col_{vet_id}"):
-                            ok = invia_richiesta_collegamento(owner_id, vet_id)
-                            if ok:
-                                st.success("Richiesta inviata! Attendi che il veterinario la accetti.")
-                                st.rerun()
-                            else:
-                                st.warning("Richiesta già inviata o errore.")
+                    if st.button("🔗 Collega", key=f"col_{vet_id}", use_container_width=True):
+                        ok = invia_richiesta_collegamento(owner_id, vet_id)
+                        if ok:
+                            st.success("Richiesta inviata!")
+                            st.rerun()
+                        else:
+                            st.warning("Richiesta già inviata o errore.")
+
+    divisore()
+
+    # ── Il tuo veterinario non è registrato? ────────────────────────────────
+    st.markdown("### 📧 Il tuo veterinario non è ancora registrato?")
+    with st.form("form_invito"):
+        email_invito = st.text_input("Email del veterinario", placeholder="vet@clinica.it")
+        sub_invito = st.form_submit_button("📧 Invia invito", type="primary", use_container_width=True)
+    if sub_invito:
+        if not email_invito:
+            st.error("Inserisci l'email.")
+        else:
+            ok, err = invita_vet_via_email(email_invito)
+            if ok:
+                st.success(f"✅ Invito inviato a {email_invito}!")
+            else:
+                st.error(f"Errore nell'invio dell'invito: {err}")
