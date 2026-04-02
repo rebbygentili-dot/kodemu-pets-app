@@ -51,11 +51,25 @@ st.markdown(
         background-color: #1B4332 !important;
     }
 
-    /* Bottone apri sidebar (freccia quando è chiusa) */
+    /* Bottone apri sidebar (quando è chiusa) */
+    [data-testid="stSidebarCollapsedControl"] {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 50% !important;
+        left: 0 !important;
+        z-index: 9999 !important;
+    }
     [data-testid="stSidebarCollapsedControl"] button {
         background-color: #2D6A4F !important;
         color: #fff !important;
-        border-radius: 50% !important;
+        border-radius: 0 8px 8px 0 !important;
+        width: 1.5rem !important;
+        height: 3rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     [data-testid="stSidebarCollapsedControl"] button:hover {
         background-color: #1B4332 !important;
