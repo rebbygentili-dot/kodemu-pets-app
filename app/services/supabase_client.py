@@ -7,12 +7,15 @@ from supabase import create_client, Client
 
 
 def get_supabase() -> Client:
-    """Client Supabase autenticato con il JWT dell'utente corrente (necessario per RLS)."""
+    """Client Supabase autenticato con il JWT dell'utente corrente (database + storage)."""
     url = st.secrets["supabase"]["url"]
     key = st.secrets["supabase"]["key"]
     client = create_client(url, key)
     access_token = st.session_state.get("access_token")
-    if access_token:
+    refresh_token = st.session_state.get("refresh_token")
+    if access_token and refresh_token:
+        client.auth.set_session(access_token, refresh_token)
+    elif access_token:
         client.postgrest.auth(access_token)
     return client
 

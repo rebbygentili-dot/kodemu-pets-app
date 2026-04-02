@@ -21,6 +21,7 @@ def login(email: str, password: str) -> dict | None:
         if user and session:
             st.session_state["user"] = user
             st.session_state["access_token"] = session.access_token
+            st.session_state["refresh_token"] = session.refresh_token
             # Carica il profilo (ruolo, nome, ecc.)
             profile = _load_profile(user.id)
             st.session_state["profile"] = profile
@@ -66,7 +67,7 @@ def logout():
         supabase.auth.sign_out()
     except Exception:
         pass
-    for key in ["user", "access_token", "profile"]:
+    for key in ["user", "access_token", "refresh_token", "profile"]:
         st.session_state.pop(key, None)
 
 
