@@ -40,6 +40,28 @@ st.markdown(
     /* Sidebar compatta */
     [data-testid="stSidebar"] { min-width: 240px; max-width: 260px; }
 
+    /* Fix collasso sidebar: quando chiusa non forza la larghezza */
+    [data-testid="stSidebar"][aria-expanded="false"] {
+        min-width: 0 !important;
+        max-width: 0 !important;
+        overflow: hidden;
+    }
+
+    /* Freccia apri/chiudi sidebar - colore verde app */
+    [data-testid="stSidebarCollapsedControl"] button,
+    [data-testid="collapsedControl"] button {
+        color: #2D6A4F !important;
+    }
+    [data-testid="stSidebarCollapsedControl"] svg,
+    [data-testid="collapsedControl"] svg {
+        fill: #2D6A4F !important;
+        stroke: #2D6A4F !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] svg {
+        fill: #2D6A4F !important;
+        stroke: #2D6A4F !important;
+    }
+
     /* Bottoni primari */
     .stButton > button[kind="primary"] {
         background-color: #2D6A4F;
