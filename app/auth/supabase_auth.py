@@ -55,8 +55,8 @@ def register(email: str, password: str, nome: str, cognome: str, ruolo: str) -> 
         if user:
             # Il profilo viene creato automaticamente dal trigger handle_new_user
             return True
-    except Exception as e:
-        st.error(f"Errore registrazione: {e}")
+    except Exception:
+        pass
     return False
 
 

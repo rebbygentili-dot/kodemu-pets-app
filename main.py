@@ -37,12 +37,12 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* Sidebar compatta */
+    /* Sidebar compatta e fissa */
     [data-testid="stSidebar"] { min-width: 240px; max-width: 260px; }
 
-    /* Frecce apri/chiudi sidebar - verde app */
-    [data-testid="stSidebarCollapsedControl"] svg { fill: #2D6A4F; }
-    [data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] svg { fill: #2D6A4F; }
+    /* Nasconde i bottoni apri/chiudi sidebar */
+    [data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] { display: none !important; }
+    [data-testid="stSidebarCollapsedControl"] { display: none !important; }
 
     /* Bottoni primari */
     .stButton > button[kind="primary"] {
