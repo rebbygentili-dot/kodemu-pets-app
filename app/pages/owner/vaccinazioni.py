@@ -56,20 +56,15 @@ def _sezione_vaccinazioni(animale_id: str, animale: dict):
             colore = "#FDECEA" if scaduto else "#F0F7F3"
             bordo = "#E63946" if scaduto else "#2D6A4F"
 
+            scaduto_tag = "<span style='color:#E63946;font-size:0.8rem;'> ⚠️ SCADUTO</span>" if scaduto else ""
             st.markdown(
-                f"""
-                <div style="background:{colore}; border-left:4px solid {bordo};
-                            padding:0.7rem 1rem; border-radius:0 8px 8px 0; margin-bottom:0.5rem;">
-                    <b>💉 {v.get('nome_vaccino','')}</b>
-                    {"<span style='color:#E63946;font-size:0.8rem;'> ⚠️ SCADUTO</span>" if scaduto else ""}
-                    <br>
-                    <span style="font-size:0.85rem; color:#555;">
-                        Somministrato: {format_data(v.get('data_somministrazione'))} &nbsp;|&nbsp;
-                        Prossimo richiamo: {format_data(v.get('data_prossimo_richiamo'))} &nbsp;|&nbsp;
-                        Lotto: {v.get('lotto') or '—'}
-                    </span>
-                </div>
-                """,
+                f'<div style="background:{colore}; border-left:4px solid {bordo}; padding:0.7rem 1rem; border-radius:0 8px 8px 0; margin-bottom:0.5rem;">'
+                f'<b>💉 {v.get("nome_vaccino","")}</b>{scaduto_tag}<br>'
+                f'<span style="font-size:0.85rem; color:#555;">'
+                f'Somministrato: {format_data(v.get("data_somministrazione"))} &nbsp;|&nbsp; '
+                f'Prossimo richiamo: {format_data(v.get("data_prossimo_richiamo"))} &nbsp;|&nbsp; '
+                f'Lotto: {v.get("lotto") or "—"}'
+                f'</span></div>',
                 unsafe_allow_html=True,
             )
 

@@ -213,10 +213,14 @@ CREATE POLICY "vaccinazioni_owner_read" ON public.vaccinazioni
     FOR SELECT USING (
         animale_id IN (SELECT id FROM public.animali WHERE owner_id = auth.uid())
     );
--- Vet: gestione completa
+-- Vet: gestione completa (basato su collegamento accettato)
 CREATE POLICY "vaccinazioni_vet_all" ON public.vaccinazioni
     FOR ALL USING (
-        animale_id IN (SELECT id FROM public.animali WHERE vet_id = auth.uid())
+        animale_id IN (
+            SELECT a.id FROM public.animali a
+            INNER JOIN public.collegamenti c ON c.owner_id = a.owner_id
+            WHERE c.vet_id = auth.uid() AND c.stato = 'accepted'
+        )
     );
 
 -- ── TERAPIE
@@ -226,7 +230,11 @@ CREATE POLICY "terapie_owner_read" ON public.terapie
     );
 CREATE POLICY "terapie_vet_all" ON public.terapie
     FOR ALL USING (
-        animale_id IN (SELECT id FROM public.animali WHERE vet_id = auth.uid())
+        animale_id IN (
+            SELECT a.id FROM public.animali a
+            INNER JOIN public.collegamenti c ON c.owner_id = a.owner_id
+            WHERE c.vet_id = auth.uid() AND c.stato = 'accepted'
+        )
     );
 
 -- ── APPUNTAMENTI
@@ -250,7 +258,11 @@ CREATE POLICY "documenti_owner_read" ON public.documenti
     FOR SELECT USING (owner_id = auth.uid());
 CREATE POLICY "documenti_vet_all" ON public.documenti
     FOR ALL USING (
-        animale_id IN (SELECT id FROM public.animali WHERE vet_id = auth.uid())
+        animale_id IN (
+            SELECT a.id FROM public.animali a
+            INNER JOIN public.collegamenti c ON c.owner_id = a.owner_id
+            WHERE c.vet_id = auth.uid() AND c.stato = 'accepted'
+        )
     );
 
 -- ── COLLEGAMENTI
