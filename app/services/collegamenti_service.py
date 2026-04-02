@@ -133,12 +133,3 @@ def rifiuta_collegamento(collegamento_id: str, vet_id: str) -> bool:
     return bool(result.data)
 
 
-def invita_vet_via_email(email_vet: str) -> tuple[bool, str]:
-    """Invia un invito email a un veterinario non ancora registrato.
-    Ritorna (successo, messaggio_errore)."""
-    admin = get_supabase_admin()
-    try:
-        admin.auth.admin.invite_user_by_email(email_vet)
-        return True, ""
-    except Exception as e:
-        return False, str(e)

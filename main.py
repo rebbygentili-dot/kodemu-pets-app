@@ -17,7 +17,7 @@ from app.pages.owner import vaccinazioni as owner_vaccinazioni
 from app.pages.owner import animali as owner_animali
 from app.pages.owner import dashboard as owner_dashboard
 from app.pages import login as login_page
-from app.auth.supabase_auth import is_logged_in, get_current_profile, get_ruolo, logout
+from app.auth.supabase_auth import is_logged_in, get_current_profile, get_ruolo, logout, completa_profilo
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -76,6 +76,52 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+
+def _pagina_completa_profilo(user_id: str):
+    """Mostrata agli utenti invitati che non hanno ancora completato il profilo."""
+    st.markdown(
+        """
+        <div style="text-align:center; padding: 2rem 0 1rem;">
+            <div style="font-size:3.5rem;">🐾</div>
+            <h1 style="font-size:2rem; font-weight:800; color:#2D6A4F; margin:0;">Benvenuto su Kodemu Pet!</h1>
+            <p style="color:#666; margin-top:0.3rem;">Completa il tuo profilo per continuare.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    ruolo = st.radio(
+        "Sei un:",
+        options=["owner", "vet"],
+        format_func=lambda x: "🐾 Proprietario di animale" if x == "owner" else "🩺 Veterinario / Clinica",
+        horizontal=True,
+        key="completa_ruolo",
+    )
+
+    with st.form("form_completa_profilo"):
+        col1, col2 = st.columns(2)
+        with col1:
+            nome = st.text_input("Nome *")
+        with col2:
+            cognome = st.text_input("Cognome *")
+
+        if st.session_state.get("completa_ruolo") == "vet":
+            clinica = st.text_input("Nome clinica (opzionale)")
+        else:
+            clinica = ""
+
+        submitted = st.form_submit_button("Salva e continua", use_container_width=True, type="primary")
+
+    if submitted:
+        if not nome or not cognome:
+            st.warning("Nome e cognome sono obbligatori.")
+        else:
+            ok = completa_profilo(user_id, nome, cognome, ruolo, clinica or None)
+            if ok:
+                st.rerun()
+            else:
+                st.error("Errore nel salvataggio del profilo. Riprova.")
 
 
 def _sidebar_owner(profile: dict):
@@ -154,6 +200,13 @@ if not is_logged_in():
     login_page.show()
 else:
     profile = get_current_profile()
+
+    # Profilo incompleto → utente invitato che non ha ancora completato la registrazione
+    if not profile or not profile.get("nome"):
+        user = st.session_state.get("user")
+        _pagina_completa_profilo(user.id if user else "")
+        st.stop()
+
     ruolo = get_ruolo()
 
     if ruolo == "owner":

@@ -4,10 +4,11 @@ Gestione collegamento con il veterinario.
 """
 import streamlit as st
 import pandas as pd
+from urllib.parse import quote
 from app.auth.supabase_auth import get_current_profile
 from app.services.collegamenti_service import (
-    cerca_vet_per_nome, invia_richiesta_collegamento,
-    get_collegamenti_owner, invita_vet_via_email, get_tutti_vet,
+    invia_richiesta_collegamento,
+    get_collegamenti_owner, get_tutti_vet,
 )
 from app.services.listino_service import get_listino_owner
 from app.components.ui_helpers import render_badge, empty_state, divisore
@@ -120,15 +121,13 @@ def show():
 
     # ── Il tuo veterinario non è registrato? ────────────────────────────────
     st.markdown("### 📧 Il tuo veterinario non è ancora registrato?")
-    with st.form("form_invito"):
-        email_invito = st.text_input("Email del veterinario", placeholder="vet@clinica.it")
-        sub_invito = st.form_submit_button("📧 Invia invito", type="primary", use_container_width=True)
-    if sub_invito:
-        if not email_invito:
-            st.error("Inserisci l'email.")
-        else:
-            ok, err = invita_vet_via_email(email_invito)
-            if ok:
-                st.success(f"✅ Invito inviato a {email_invito}!")
-            else:
-                st.error(f"Errore nell'invio dell'invito: {err}")
+    email_invito = st.text_input("Email del veterinario", placeholder="vet@clinica.it", key="email_invito")
+
+    if email_invito:
+        oggetto = quote("Ti invito su Kodemu Pet")
+        corpo = quote(
+            "Ciao,\n\nti invito a registrarti su Kodemu Pet, la piattaforma digitale per la gestione "
+            "della salute dei tuoi pazienti.\n\nRegistrati qui: https://kodemu.it\n\nA presto!"
+        )
+        mailto = f"mailto:{email_invito}?subject={oggetto}&body={corpo}"
+        st.link_button("📧 Apri email e invia invito", mailto, use_container_width=True, type="primary")
