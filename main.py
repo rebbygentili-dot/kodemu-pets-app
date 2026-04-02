@@ -37,29 +37,33 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* Sidebar compatta */
-    [data-testid="stSidebar"] { min-width: 240px; max-width: 260px; }
-
-    /* Fix collasso sidebar: quando chiusa non forza la larghezza */
+    /* Sidebar compatta - solo quando aperta */
+    [data-testid="stSidebar"][aria-expanded="true"] {
+        min-width: 240px !important;
+        max-width: 260px !important;
+    }
+    /* Sidebar chiusa - nessun vincolo larghezza così Streamlit la gestisce */
     [data-testid="stSidebar"][aria-expanded="false"] {
         min-width: 0 !important;
         max-width: 0 !important;
-        overflow: hidden;
     }
 
-    /* Freccia apri/chiudi sidebar - colore verde app */
-    [data-testid="stSidebarCollapsedControl"] button,
-    [data-testid="collapsedControl"] button {
+    /* Bottone di riapertura sidebar (freccia a sinistra quando chiusa) */
+    [data-testid="stSidebarCollapsedControl"] {
+        z-index: 999999 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Frecce apri/chiudi - verde app */
+    [data-testid="stSidebarCollapsedControl"] svg,
+    [data-testid="stSidebarCollapsedControl"] button svg {
+        fill: #2D6A4F !important;
         color: #2D6A4F !important;
     }
-    [data-testid="stSidebarCollapsedControl"] svg,
-    [data-testid="collapsedControl"] svg {
+    [data-testid="stSidebar"] button svg {
         fill: #2D6A4F !important;
-        stroke: #2D6A4F !important;
-    }
-    [data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] svg {
-        fill: #2D6A4F !important;
-        stroke: #2D6A4F !important;
+        color: #2D6A4F !important;
     }
 
     /* Bottoni primari */
