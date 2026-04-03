@@ -168,8 +168,8 @@ def _form_animale(owner_id: str):
         payload = {
             "owner_id": owner_id,
             "specie": specie,
-            "nome": nome,
-            "razza": razza,
+            "nome": nome.strip().title(),
+            "razza": razza.strip().title() if razza else None,
             "data_nascita": data_nascita.isoformat(),
             "microchip": microchip or None,
             "peso_kg": peso or None,

@@ -44,8 +44,8 @@ def register(email: str, password: str, nome: str, cognome: str, ruolo: str) -> 
                 "password": password,
                 "options": {
                     "data": {
-                        "nome": nome,
-                        "cognome": cognome,
+                        "nome": nome.strip().title(),
+                        "cognome": cognome.strip().title(),
                         "ruolo": ruolo,
                     }
                 },
@@ -115,10 +115,10 @@ def completa_profilo(user_id: str, nome: str, cognome: str, ruolo: str, clinica:
     payload = {
         "id": user_id,
         "email": email,
-        "nome": nome,
-        "cognome": cognome,
+        "nome": nome.strip().title(),
+        "cognome": cognome.strip().title(),
         "ruolo": ruolo,
-        "clinica": clinica or None,
+        "clinica": clinica.strip().title() if clinica else None,
     }
     try:
         response = admin.table("profiles").upsert(payload).execute()
