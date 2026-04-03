@@ -271,10 +271,11 @@ if "token_hash" in _qp:
     if _token_type == "recovery":
         _pagina_reset_password(_token_hash)
         st.stop()
-    elif _token_type in ("invite", "magiclink"):
+    elif _token_type in ("invite", "magiclink", "signup", "email"):
         ok = verifica_otp(_token_hash, _token_type)
         if ok:
             st.query_params.clear()
+            st.session_state["flash_success"] = "✅ Email confermata! Sei ora loggato."
             st.rerun()
         else:
             st.error("Link non valido o scaduto. Torna alla pagina di login.")
