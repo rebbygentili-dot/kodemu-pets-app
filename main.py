@@ -19,7 +19,7 @@ from app.pages.owner import dashboard as owner_dashboard
 from app.pages import login as login_page
 from app.auth.supabase_auth import (
     is_logged_in, get_current_profile, get_ruolo, logout,
-    completa_profilo, login_con_token, reset_password_con_token,
+    completa_profilo, verifica_otp, aggiorna_password,
 )
 import streamlit as st
 import streamlit.components.v1 as components
@@ -105,7 +105,7 @@ st.markdown(
 )
 
 
-def _pagina_reset_password(access_token: str, refresh_token: str):
+def _pagina_reset_password(token_hash: str):
     """Pagina per impostare una nuova password via link di recovery."""
     st.markdown(
         """
@@ -129,11 +129,16 @@ def _pagina_reset_password(access_token: str, refresh_token: str):
         elif len(nuova_pwd) < 8:
             st.error("La password deve avere almeno 8 caratteri.")
         else:
-            ok = reset_password_con_token(access_token, refresh_token, nuova_pwd)
-            if ok:
-                st.success("✅ Password aggiornata! Ora puoi accedere.")
-                st.query_params.clear()
-                st.rerun()
+            # Verifica il token e crea la sessione, poi aggiorna la password
+            ok_session = verifica_otp(token_hash, "recovery")
+            if ok_session:
+                ok_pwd = aggiorna_password(nuova_pwd)
+                if ok_pwd:
+                    st.success("✅ Password aggiornata! Ora puoi accedere.")
+                    st.query_params.clear()
+                    st.rerun()
+                else:
+                    st.error("Errore nell'aggiornamento della password. Riprova.")
             else:
                 st.error("Link scaduto o non valido. Richiedine uno nuovo dalla pagina di login.")
 
@@ -256,18 +261,17 @@ def _sidebar_vet(profile: dict):
 
 # ── ROUTING PRINCIPALE ────────────────────────────────────────────────────────
 
-# ── Gestione token auth da URL (recovery / magic link / invite) ───────────────
+# ── Gestione token auth da URL (recovery / invite) ───────────────────────────
 _qp = st.query_params
-if "access_token" in _qp:
-    _token_type    = _qp.get("type", "")
-    _access_token  = _qp.get("access_token", "")
-    _refresh_token = _qp.get("refresh_token", "")
+if "token_hash" in _qp:
+    _token_hash = _qp.get("token_hash", "")
+    _token_type = _qp.get("type", "")
 
     if _token_type == "recovery":
-        _pagina_reset_password(_access_token, _refresh_token)
+        _pagina_reset_password(_token_hash)
         st.stop()
     elif _token_type in ("invite", "magiclink"):
-        ok = login_con_token(_access_token, _refresh_token)
+        ok = verifica_otp(_token_hash, _token_type)
         if ok:
             st.query_params.clear()
             st.rerun()

@@ -60,11 +60,14 @@ def register(email: str, password: str, nome: str, cognome: str, ruolo: str) -> 
     return False
 
 
-def login_con_token(access_token: str, refresh_token: str) -> bool:
-    """Esegue il login usando i token ricevuti via magic link / invite."""
+def verifica_otp(token_hash: str, tipo: str) -> bool:
+    """Verifica un token OTP da email (recovery, invite) e crea la sessione."""
     supabase = get_supabase()
     try:
-        response = supabase.auth.set_session(access_token, refresh_token)
+        response = supabase.auth.verify_otp({
+            "token_hash": token_hash,
+            "type": tipo,
+        })
         user = response.user
         session = response.session
         if user and session:
@@ -79,11 +82,10 @@ def login_con_token(access_token: str, refresh_token: str) -> bool:
     return False
 
 
-def reset_password_con_token(access_token: str, refresh_token: str, nuova_password: str) -> bool:
-    """Imposta una nuova password usando il token di recovery ricevuto via email."""
+def aggiorna_password(nuova_password: str) -> bool:
+    """Aggiorna la password dell'utente attualmente in sessione."""
     supabase = get_supabase()
     try:
-        supabase.auth.set_session(access_token, refresh_token)
         supabase.auth.update_user({"password": nuova_password})
         return True
     except Exception:
