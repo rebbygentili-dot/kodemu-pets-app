@@ -24,7 +24,6 @@ def get_supabase() -> Client:
     return client
 
 
-@st.cache_resource
 def get_supabase_admin() -> Client:
     """Client con service_role_key per operazioni admin (es. inviti email)."""
     url = st.secrets["supabase"]["url"]

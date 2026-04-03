@@ -100,30 +100,31 @@ def completa_profilo(user_id: str, nome: str, cognome: str, ruolo: str, clinica:
     """Aggiorna il profilo di un utente invitato che non ha ancora completato la registrazione."""
     from app.services.supabase_client import get_supabase_admin
     admin = get_supabase_admin()
+    user = st.session_state.get("user")
+    email = getattr(user, "email", "") if user else ""
+    payload = {
+        "id": user_id,
+        "email": email,
+        "nome": nome,
+        "cognome": cognome,
+        "ruolo": ruolo,
+        "clinica": clinica or None,
+    }
     try:
-        user = st.session_state.get("user")
-        email = getattr(user, "email", "") if user else ""
-        admin.table("profiles").upsert({
-            "id": user_id,
-            "email": email,
-            "nome": nome,
-            "cognome": cognome,
-            "ruolo": ruolo,
-            "clinica": clinica or None,
-        }).execute()
-        # Aggiorna session_state direttamente senza ricaricare dal DB
-        # (evita problemi con sessioni scadute)
-        profile = st.session_state.get("profile") or {"id": user_id}
-        profile.update({
-            "nome": nome,
-            "cognome": cognome,
-            "ruolo": ruolo,
-            "clinica": clinica or None,
-        })
-        st.session_state["profile"] = profile
-        return True
-    except Exception:
+        response = admin.table("profiles").upsert(payload).execute()
+    except Exception as e:
+        st.error(f"Errore salvataggio profilo: {e}")
         return False
+
+    if not response.data:
+        st.error("Il profilo non è stato salvato nel database. Riprova.")
+        return False
+
+    # DB confermato — aggiorna session_state
+    profile = st.session_state.get("profile") or {"id": user_id}
+    profile.update({"nome": nome, "cognome": cognome, "ruolo": ruolo, "clinica": clinica or None})
+    st.session_state["profile"] = profile
+    return True
 
 
 def logout():
