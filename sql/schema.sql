@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS public.animali (
     nome                TEXT NOT NULL,
     razza               TEXT,
     data_nascita        DATE,
-    sesso               TEXT CHECK (sesso IN ('M', 'F', 'Non specificato')),
+    sesso               TEXT CHECK (sesso IN ('Maschio intero', 'Maschio castrato', 'Femmina intera', 'Femmina sterilizzata', 'Non specificato')),
     microchip           TEXT UNIQUE,
     peso_kg             NUMERIC(6,2),
     allergie            TEXT,

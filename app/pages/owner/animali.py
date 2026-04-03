@@ -115,8 +115,11 @@ def _form_animale(owner_id: str):
             peso = st.number_input("Peso (kg)", min_value=0.0, max_value=999.0, step=0.1,
                                     value=float(editing.get("peso_kg") or 0) if editing else 0.0)
         with col4:
-            sesso = st.selectbox("Sesso", ["M", "F", "Non specificato"],
-                                  index=["M","F","Non specificato"].index(editing.get("sesso","Non specificato")) if editing else 2)
+            _opzioni_sesso = ["Maschio intero", "Maschio castrato", "Femmina intera", "Femmina sterilizzata", "Non specificato"]
+            _sesso_default = editing.get("sesso", "Non specificato") if editing else "Non specificato"
+            if _sesso_default not in _opzioni_sesso:
+                _sesso_default = "Non specificato"
+            sesso = st.selectbox("Sesso", _opzioni_sesso, index=_opzioni_sesso.index(_sesso_default))
 
         # Campi specie-specifici
         sterilizzato = None
