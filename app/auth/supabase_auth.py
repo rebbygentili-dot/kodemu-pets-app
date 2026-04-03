@@ -60,6 +60,36 @@ def register(email: str, password: str, nome: str, cognome: str, ruolo: str) -> 
     return False
 
 
+def login_con_token(access_token: str, refresh_token: str) -> bool:
+    """Esegue il login usando i token ricevuti via magic link / invite."""
+    supabase = get_supabase()
+    try:
+        response = supabase.auth.set_session(access_token, refresh_token)
+        user = response.user
+        session = response.session
+        if user and session:
+            st.session_state["user"] = user
+            st.session_state["access_token"] = session.access_token
+            st.session_state["refresh_token"] = session.refresh_token
+            profile = _load_profile(user.id)
+            st.session_state["profile"] = profile
+            return True
+    except Exception:
+        pass
+    return False
+
+
+def reset_password_con_token(access_token: str, refresh_token: str, nuova_password: str) -> bool:
+    """Imposta una nuova password usando il token di recovery ricevuto via email."""
+    supabase = get_supabase()
+    try:
+        supabase.auth.set_session(access_token, refresh_token)
+        supabase.auth.update_user({"password": nuova_password})
+        return True
+    except Exception:
+        return False
+
+
 def completa_profilo(user_id: str, nome: str, cognome: str, ruolo: str, clinica: str | None = None) -> bool:
     """Aggiorna il profilo di un utente invitato che non ha ancora completato la registrazione."""
     supabase = get_supabase()

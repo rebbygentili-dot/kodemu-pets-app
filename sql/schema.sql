@@ -1,5 +1,5 @@
 -- ============================================================
--- VetBook - Schema SQL Supabase
+-- Kodemu Pet - Schema SQL Supabase
 -- Esegui questo script nell'SQL Editor di Supabase
 -- ============================================================
 

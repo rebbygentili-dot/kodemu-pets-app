@@ -1,6 +1,6 @@
 """
 main.py
-Entry point dell'applicazione VetBook.
+Entry point dell'applicazione Kodemu Pet.
 Gestisce routing, autenticazione e navigazione per owner e vet.
 """
 from app.pages.vet import chat as vet_chat
@@ -17,7 +17,10 @@ from app.pages.owner import vaccinazioni as owner_vaccinazioni
 from app.pages.owner import animali as owner_animali
 from app.pages.owner import dashboard as owner_dashboard
 from app.pages import login as login_page
-from app.auth.supabase_auth import is_logged_in, get_current_profile, get_ruolo, logout, completa_profilo
+from app.auth.supabase_auth import (
+    is_logged_in, get_current_profile, get_ruolo, logout,
+    completa_profilo, login_con_token, reset_password_con_token,
+)
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -28,9 +31,33 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Cancella lo stato sidebar salvato nel localStorage del browser
+# Intercetta token Supabase dall'URL hash e li converte in query params leggibili da Streamlit
 components.html(
-    "<script>Object.keys(localStorage).forEach(k=>{ if(k.toLowerCase().includes('sidebar')) localStorage.removeItem(k); });</script>",
+    """
+    <script>
+    (function() {
+        // Cancella stato sidebar
+        Object.keys(localStorage).forEach(function(k) {
+            if (k.toLowerCase().includes('sidebar')) localStorage.removeItem(k);
+        });
+        // Rileva token auth di Supabase nel hash dell'URL (es. #access_token=...&type=recovery)
+        var hash = window.parent.location.hash;
+        if (hash && hash.includes('access_token')) {
+            var params = new URLSearchParams(hash.substring(1));
+            var accessToken  = params.get('access_token')  || '';
+            var refreshToken = params.get('refresh_token') || '';
+            var type         = params.get('type')          || '';
+            if (accessToken) {
+                window.parent.location.href =
+                    window.parent.location.pathname +
+                    '?access_token='  + encodeURIComponent(accessToken)  +
+                    '&refresh_token=' + encodeURIComponent(refreshToken) +
+                    '&type='          + encodeURIComponent(type);
+            }
+        }
+    })();
+    </script>
+    """,
     height=0,
 )
 
@@ -76,6 +103,39 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+
+def _pagina_reset_password(access_token: str, refresh_token: str):
+    """Pagina per impostare una nuova password via link di recovery."""
+    st.markdown(
+        """
+        <div style="text-align:center; padding: 2rem 0 1rem;">
+            <div style="font-size:3.5rem;">🔑</div>
+            <h1 style="font-size:2rem; font-weight:800; color:#2D6A4F; margin:0;">Imposta nuova password</h1>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    with st.form("form_reset_pwd"):
+        nuova_pwd    = st.text_input("Nuova password *", type="password", help="Minimo 8 caratteri")
+        conferma_pwd = st.text_input("Conferma password *", type="password")
+        submitted    = st.form_submit_button("Salva password", type="primary", use_container_width=True)
+
+    if submitted:
+        if not nuova_pwd or not conferma_pwd:
+            st.warning("Compila entrambi i campi.")
+        elif nuova_pwd != conferma_pwd:
+            st.error("Le password non coincidono.")
+        elif len(nuova_pwd) < 8:
+            st.error("La password deve avere almeno 8 caratteri.")
+        else:
+            ok = reset_password_con_token(access_token, refresh_token, nuova_pwd)
+            if ok:
+                st.success("✅ Password aggiornata! Ora puoi accedere.")
+                st.query_params.clear()
+                st.rerun()
+            else:
+                st.error("Link scaduto o non valido. Richiedine uno nuovo dalla pagina di login.")
 
 
 def _pagina_completa_profilo(user_id: str):
@@ -131,7 +191,7 @@ def _sidebar_owner(profile: dict):
         f"""
         <div style="text-align:center; padding:1rem 0 0.5rem;">
             <div style="font-size:2.5rem;">🐾</div>
-            <div style="font-weight:800; font-size:1.2rem; color:#2D6A4F;">VetBook</div>
+            <div style="font-weight:800; font-size:1.2rem; color:#2D6A4F;">Kodemu Pet</div>
             <div style="font-size:0.8rem; color:#888; margin-top:2px;">👤 {nome}</div>
         </div>
         """,
@@ -167,7 +227,7 @@ def _sidebar_vet(profile: dict):
         f"""
         <div style="text-align:center; padding:1rem 0 0.5rem;">
             <div style="font-size:2.5rem;">🩺</div>
-            <div style="font-weight:800; font-size:1.2rem; color:#1B4332;">VetBook Pro</div>
+            <div style="font-weight:800; font-size:1.2rem; color:#1B4332;">Kodemu Pet</div>
             <div style="font-size:0.8rem; color:#888; margin-top:2px;">Dr. {nome} {cognome}</div>
         </div>
         """,
@@ -195,6 +255,25 @@ def _sidebar_vet(profile: dict):
 
 
 # ── ROUTING PRINCIPALE ────────────────────────────────────────────────────────
+
+# ── Gestione token auth da URL (recovery / magic link / invite) ───────────────
+_qp = st.query_params
+if "access_token" in _qp:
+    _token_type    = _qp.get("type", "")
+    _access_token  = _qp.get("access_token", "")
+    _refresh_token = _qp.get("refresh_token", "")
+
+    if _token_type == "recovery":
+        _pagina_reset_password(_access_token, _refresh_token)
+        st.stop()
+    elif _token_type in ("invite", "magiclink"):
+        ok = login_con_token(_access_token, _refresh_token)
+        if ok:
+            st.query_params.clear()
+            st.rerun()
+        else:
+            st.error("Link non valido o scaduto. Torna alla pagina di login.")
+            st.stop()
 
 if not is_logged_in():
     login_page.show()
