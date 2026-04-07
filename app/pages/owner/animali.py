@@ -109,14 +109,16 @@ def _form_animale(owner_id: str):
 
     st.markdown(f"### {titolo}")
 
-    with st.form("form_animale"):
-        specie = st.selectbox(
-            "Specie *",
-            SPECIE,
-            format_func=lambda s: f"{icona_specie(s)} {s}",
-            index=SPECIE.index(editing["specie"]) if editing else 0,
-        )
+    # Fuori dal form: il cambio specie triggera rerun e aggiorna placeholder e campi dinamici
+    specie = st.selectbox(
+        "Specie *",
+        SPECIE,
+        format_func=lambda s: f"{icona_specie(s)} {s}",
+        index=SPECIE.index(editing["specie"]) if editing else 0,
+        key="specie_form_sel",
+    )
 
+    with st.form("form_animale"):
         col1, col2 = st.columns(2)
         with col1:
             nome = st.text_input(
