@@ -21,12 +21,41 @@ def show():
         empty_state("🐾", "Nessun paziente")
         return
 
-    nomi = {a["id"]: f"{icona_specie(a['specie'])} {a['nome']} ({(a.get('profiles') or {}).get('cognome','')})"
-            for a in animali}
-    sel_id = st.selectbox("Seleziona paziente", options=list(nomi.keys()), format_func=lambda x: nomi[x])
+    # Filtri
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        filtro_specie = st.selectbox("Filtra per specie", ["Tutte", "Cane", "Gatto", "Cavallo"])
+    with col2:
+        cerca = st.text_input("Cerca per nome animale o proprietario", placeholder="🔍")
+    with col3:
+        st.markdown(f"**{len(animali)} pazienti totali**")
 
-    st.divider()
-    render_cartella_animale(sel_id, vet_id)
+    # Applica filtri
+    filtrati = animali
+    if filtro_specie != "Tutte":
+        filtrati = [a for a in filtrati if a.get("specie") == filtro_specie]
+    if cerca:
+        q = cerca.lower()
+        filtrati = [
+            a for a in filtrati
+            if q in (a.get("nome") or "").lower()
+            or q in (a.get("profiles", {}) or {}).get("cognome", "").lower()
+            or q in (a.get("profiles", {}) or {}).get("nome", "").lower()
+        ]
+
+    if not filtrati:
+        empty_state("🔍", "Nessun risultato trovato")
+        return
+
+    for animale in filtrati:
+        specie = animale.get("specie", "")
+        owner = animale.get("profiles") or {}
+        with st.expander(
+            f"{icona_specie(specie)} **{animale['nome']}** — "
+            f"{animale.get('razza', '?')} · "
+            f"👤 {owner.get('nome', '')} {owner.get('cognome', '')}"
+        ):
+            render_cartella_animale(animale["id"], vet_id)
 
 
 def render_cartella_animale(animale_id: str, vet_id: str):
