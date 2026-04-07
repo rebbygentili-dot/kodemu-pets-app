@@ -7,6 +7,12 @@ from app.services.animali_service import (
     get_animali_by_owner, crea_animale, aggiorna_animale, elimina_animale,
     SPECIE, get_suggerimenti,
 )
+
+_RAZZE_PLACEHOLDER = {
+    "Cane": "es. Labrador, Golden Retriever",
+    "Gatto": "es. Persiano, Maine Coon",
+    "Cavallo": "es. Purosangue, Quarter Horse",
+}
 from app.services.collegamenti_service import get_vet_collegati_owner
 from app.components.ui_helpers import icona_specie, format_data, empty_state, divisore
 
@@ -123,7 +129,7 @@ def _form_animale(owner_id: str):
             )
         with col2:
             razza = st.text_input("Razza", value=editing.get("razza", "") if editing else "",
-                                  placeholder="es. Labrador / Meticcio")
+                                  placeholder=_RAZZE_PLACEHOLDER.get(specie, "es. Meticcio"))
             microchip = st.text_input("N. Microchip", value=editing.get("microchip", "") if editing else "",
                                       placeholder="Lascia vuoto se assente", help="Il microchip è un codice numerico univoco a 15 cifre. Lascia vuoto se l'animale non è ancora microchippato.")
 
