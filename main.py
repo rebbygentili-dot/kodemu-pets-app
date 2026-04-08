@@ -169,7 +169,7 @@ st.markdown(
         fill: #B3A18D !important;
     }
 
-    /* Selectbox — sfondo e bordo su tutti i livelli */
+    /* Selectbox — sfondo trasparente e bordo beige */
     [data-testid="stSelectbox"] *,
     [data-testid="stMultiSelect"] *,
     [data-baseweb="select"],
@@ -177,7 +177,7 @@ st.markdown(
     [data-baseweb="select"] > div,
     [data-baseweb="select"] > div > div,
     [data-baseweb="select"] > div > div > div {
-        background-color: #F2EDE7 !important;
+        background-color: transparent !important;
         border-color: #C9B8A6 !important;
     }
     [data-baseweb="select"] > div:focus-within,
