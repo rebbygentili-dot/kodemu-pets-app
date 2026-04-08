@@ -67,7 +67,7 @@ st.markdown(
     """
     <style>
     /* Sidebar compatta e fissa */
-    [data-testid="stSidebar"] { min-width: 240px; max-width: 260px; }
+    [data-testid="stSidebar"] { min-width: 240px; max-width: 260px; background-color: #bda18d94; }
 
     /* Nasconde i bottoni apri/chiudi sidebar */
     [data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] { display: none !important; }
@@ -88,6 +88,13 @@ st.markdown(
     /* Tabs */
     .stTabs [data-baseweb="tab-list"] { gap: 0.5rem; }
     .stTabs [data-baseweb="tab"] { border-radius: 8px 8px 0 0; }
+
+    /* Hover menu a tendina (selectbox, multiselect) */
+    [data-baseweb="option"]:hover,
+    [data-baseweb="menu"] li:hover,
+    [role="option"]:hover {
+        background-color: #bda18d94 !important;
+    }
 
     /* Expander */
     .streamlit-expanderHeader { font-weight: 600; }
