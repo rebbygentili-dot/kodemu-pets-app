@@ -117,10 +117,14 @@ st.markdown(
         box-shadow: 0 0 0 1px #B3A18D !important;
     }
 
-    /* Selectbox — sfondo valore selezionato */
+    /* Selectbox — sfondo valore selezionato (globale) */
     [data-baseweb="select"] > div,
+    [data-baseweb="select"] > div > div,
     [data-baseweb="select"] [data-baseweb="tag"],
-    [data-testid="stSelectbox"] [data-baseweb="select"] > div {
+    div[class*="ValueContainer"],
+    div[class*="control"],
+    [data-testid="stSelectbox"] > div > div,
+    [data-testid="stMultiSelect"] > div > div {
         background-color: #F2EDE7 !important;
     }
 
