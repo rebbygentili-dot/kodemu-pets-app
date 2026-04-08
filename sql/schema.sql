@@ -274,6 +274,17 @@ CREATE POLICY "terapie_owner_read" ON public.terapie
     FOR SELECT USING (
         animale_id IN (SELECT id FROM public.animali WHERE owner_id = auth.uid())
     );
+-- Owner può inserire/eliminare solo integratori e antiparassitari (le terapie classiche le gestisce il vet)
+CREATE POLICY "terapie_owner_insert" ON public.terapie
+    FOR INSERT WITH CHECK (
+        animale_id IN (SELECT id FROM public.animali WHERE owner_id = auth.uid())
+        AND categoria IN ('integratore', 'antiparassitario')
+    );
+CREATE POLICY "terapie_owner_delete" ON public.terapie
+    FOR DELETE USING (
+        animale_id IN (SELECT id FROM public.animali WHERE owner_id = auth.uid())
+        AND categoria IN ('integratore', 'antiparassitario')
+    );
 CREATE POLICY "terapie_vet_all" ON public.terapie
     FOR ALL USING (
         animale_id IN (
