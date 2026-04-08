@@ -122,3 +122,66 @@ def elimina_terapia(terapia_id: str) -> bool:
     supabase = get_supabase()
     result = supabase.table("terapie").delete().eq("id", terapia_id).execute()
     return bool(result.data)
+
+
+# ── Integratori (cavalli) ─────────────────────────────────────────────────────
+
+INTEGRATORI_CATALOGO = ["Elettroliti", "Olio di semi di lino", "Biotina", "Altro"]
+
+
+def get_integratori(animale_id: str) -> list:
+    supabase = get_supabase()
+    return (
+        supabase.table("terapie")
+        .select("*")
+        .eq("animale_id", animale_id)
+        .eq("categoria", "integratore")
+        .order("data_inizio", desc=True)
+        .execute()
+        .data or []
+    )
+
+
+def aggiungi_integratore(data: dict) -> dict | None:
+    supabase = get_supabase()
+    payload = {**data, "categoria": "integratore"}
+    result = supabase.table("terapie").insert(payload).execute()
+    return result.data[0] if result.data else None
+
+
+def elimina_integratore(integratore_id: str) -> bool:
+    supabase = get_supabase()
+    result = supabase.table("terapie").delete().eq("id", integratore_id).execute()
+    return bool(result.data)
+
+
+# ── Antiparassitari (cani e gatti) ───────────────────────────────────────────
+
+TIPI_SOMMINISTRAZIONE = ["Pipetta", "Pastiglia", "Spray", "Collare"]
+COPERTURE_ANTIPARASSITARIO = ["Pulci", "Zecche", "Pappataci", "Pulci + Zecche", "Tutto (pulci, zecche, pappataci)"]
+
+
+def get_antiparassitari(animale_id: str) -> list:
+    supabase = get_supabase()
+    return (
+        supabase.table("terapie")
+        .select("*")
+        .eq("animale_id", animale_id)
+        .eq("categoria", "antiparassitario")
+        .order("data_inizio", desc=True)
+        .execute()
+        .data or []
+    )
+
+
+def aggiungi_antiparassitario(data: dict) -> dict | None:
+    supabase = get_supabase()
+    payload = {**data, "categoria": "antiparassitario"}
+    result = supabase.table("terapie").insert(payload).execute()
+    return result.data[0] if result.data else None
+
+
+def elimina_antiparassitario(antiparassitario_id: str) -> bool:
+    supabase = get_supabase()
+    result = supabase.table("terapie").delete().eq("id", antiparassitario_id).execute()
+    return bool(result.data)

@@ -71,15 +71,22 @@ CREATE TABLE IF NOT EXISTS public.vaccinazioni (
 
 -- ── TERAPIE ───────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.terapie (
-    id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    animale_id  UUID NOT NULL REFERENCES public.animali(id) ON DELETE CASCADE,
-    farmaco     TEXT NOT NULL,
-    dosaggio    TEXT,
-    data_inizio DATE NOT NULL,
-    data_fine   DATE,
-    attiva      BOOLEAN DEFAULT TRUE,
-    note        TEXT,
-    created_at  TIMESTAMPTZ DEFAULT NOW()
+    id                    UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    animale_id            UUID NOT NULL REFERENCES public.animali(id) ON DELETE CASCADE,
+    farmaco               TEXT NOT NULL,
+    dosaggio              TEXT,
+    data_inizio           DATE NOT NULL,
+    data_fine             DATE,
+    attiva                BOOLEAN DEFAULT TRUE,
+    note                  TEXT,
+    -- Categoria: terapia classica, integratore (cavalli) o antiparassitario (cani/gatti)
+    categoria             TEXT NOT NULL DEFAULT 'terapia'
+                              CHECK (categoria IN ('terapia', 'integratore', 'antiparassitario')),
+    -- Solo per antiparassitari: modalità di somministrazione
+    tipo_somministrazione TEXT CHECK (tipo_somministrazione IN ('Pipetta', 'Pastiglia', 'Spray', 'Collare')),
+    -- Solo per antiparassitari: data prossima dose
+    data_prossima_dose    DATE,
+    created_at            TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ── APPUNTAMENTI ──────────────────────────────────────────────────────────────
@@ -426,7 +433,8 @@ CREATE INDEX IF NOT EXISTS idx_animali_owner   ON public.animali(owner_id);
 CREATE INDEX IF NOT EXISTS idx_animali_vet     ON public.animali(vet_id);
 CREATE INDEX IF NOT EXISTS idx_vaccinazioni_animale  ON public.vaccinazioni(animale_id);
 CREATE INDEX IF NOT EXISTS idx_catalogo_specie       ON public.vaccini_catalogo(specie);
-CREATE INDEX IF NOT EXISTS idx_terapie_animale ON public.terapie(animale_id);
+CREATE INDEX IF NOT EXISTS idx_terapie_animale   ON public.terapie(animale_id);
+CREATE INDEX IF NOT EXISTS idx_terapie_categoria ON public.terapie(animale_id, categoria);
 CREATE INDEX IF NOT EXISTS idx_appuntamenti_owner ON public.appuntamenti(owner_id);
 CREATE INDEX IF NOT EXISTS idx_appuntamenti_vet   ON public.appuntamenti(vet_id);
 CREATE INDEX IF NOT EXISTS idx_appuntamenti_data  ON public.appuntamenti(data_ora);
