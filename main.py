@@ -92,20 +92,81 @@ st.markdown(
     .stTabs [data-baseweb="tab"][aria-selected="true"] { color: #B3A18D !important; }
     .stTabs [data-baseweb="tab-highlight"] { background-color: #B3A18D !important; }
 
-    /* Input — bordo sempre e al focus */
+    /* Input — sfondo, bordo sempre e al focus */
+    [data-baseweb="input"],
     [data-baseweb="input"] > div,
+    [data-baseweb="textarea"],
     [data-baseweb="textarea"] > div,
     [data-baseweb="base-input"],
     [data-testid="stTextInput"] > div > div,
-    [data-testid="stTextArea"] > div > div {
+    [data-testid="stTextArea"] > div > div,
+    [data-testid="stTextInput"] input,
+    [data-testid="stTextArea"] textarea {
+        background-color: #F2EDE7 !important;
         border-color: #C9B8A6 !important;
+        outline-color: #C9B8A6 !important;
     }
+    [data-baseweb="input"]:focus-within,
     [data-baseweb="input"]:focus-within > div,
+    [data-baseweb="textarea"]:focus-within,
     [data-baseweb="textarea"]:focus-within > div,
     [data-testid="stTextInput"] > div > div:focus-within,
-    [data-testid="stTextArea"] > div > div:focus-within {
+    [data-testid="stTextArea"] > div > div:focus-within,
+    [data-testid="stTextInput"] input:focus,
+    [data-testid="stTextArea"] textarea:focus {
+        background-color: #F2EDE7 !important;
         border-color: #B3A18D !important;
         box-shadow: 0 0 0 1px #B3A18D !important;
+        outline: none !important;
+    }
+
+    /* Form — bordo contenitore */
+    [data-testid="stForm"] {
+        border-color: #C9B8A6 !important;
+    }
+
+    /* Date input — sfondo e bordo */
+    [data-testid="stDateInput"] > div,
+    [data-testid="stDateInput"] > div > div,
+    [data-testid="stDateInput"] input,
+    [data-baseweb="datepicker"] input,
+    [data-baseweb="calendar"] {
+        background-color: #F2EDE7 !important;
+        border-color: #C9B8A6 !important;
+    }
+    [data-testid="stDateInput"] > div:focus-within,
+    [data-testid="stDateInput"] input:focus {
+        border-color: #B3A18D !important;
+        box-shadow: 0 0 0 1px #B3A18D !important;
+        outline: none !important;
+    }
+
+    /* Time input — sfondo e bordo */
+    [data-testid="stTimeInput"] > div,
+    [data-testid="stTimeInput"] > div > div,
+    [data-testid="stTimeInput"] input {
+        background-color: #F2EDE7 !important;
+        border-color: #C9B8A6 !important;
+    }
+    [data-testid="stTimeInput"] > div:focus-within,
+    [data-testid="stTimeInput"] input:focus {
+        border-color: #B3A18D !important;
+        box-shadow: 0 0 0 1px #B3A18D !important;
+        outline: none !important;
+    }
+
+    /* Expander — bordo e header */
+    [data-testid="stExpander"] {
+        border-color: #C9B8A6 !important;
+    }
+    [data-testid="stExpander"] summary:focus-visible,
+    [data-testid="stExpander"] details:focus-within {
+        border-color: #B3A18D !important;
+        box-shadow: none !important;
+    }
+    [data-testid="stExpander"] svg {
+        color: #B3A18D !important;
+        fill: #B3A18D !important;
     }
 
     /* Selectbox — bordo sempre e al focus */
