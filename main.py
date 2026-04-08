@@ -92,16 +92,26 @@ st.markdown(
     .stTabs [data-baseweb="tab"][aria-selected="true"] { color: #B3A18D !important; }
     .stTabs [data-baseweb="tab-highlight"] { background-color: #B3A18D !important; }
 
-    /* Input e selectbox — bordo focus */
-    input:focus, textarea:focus,
-    [data-baseweb="input"]:focus-within,
-    [data-baseweb="textarea"]:focus-within,
-    [data-baseweb="select"] [data-baseweb="input"]:focus-within {
+    /* Input — bordo sempre e al focus */
+    [data-baseweb="input"] > div,
+    [data-baseweb="textarea"] > div,
+    [data-baseweb="base-input"],
+    [data-testid="stTextInput"] > div > div,
+    [data-testid="stTextArea"] > div > div {
+        border-color: #C9B8A6 !important;
+    }
+    [data-baseweb="input"]:focus-within > div,
+    [data-baseweb="textarea"]:focus-within > div,
+    [data-testid="stTextInput"] > div > div:focus-within,
+    [data-testid="stTextArea"] > div > div:focus-within {
         border-color: #B3A18D !important;
         box-shadow: 0 0 0 1px #B3A18D !important;
     }
 
-    /* Selectbox e multiselect — bordo */
+    /* Selectbox — bordo sempre e al focus */
+    [data-baseweb="select"] > div {
+        border-color: #C9B8A6 !important;
+    }
     [data-baseweb="select"] > div:focus-within {
         border-color: #B3A18D !important;
         box-shadow: 0 0 0 1px #B3A18D !important;
