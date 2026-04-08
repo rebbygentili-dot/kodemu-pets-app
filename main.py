@@ -169,24 +169,21 @@ st.markdown(
         fill: #B3A18D !important;
     }
 
-    /* Selectbox — bordo sempre e al focus */
-    [data-baseweb="select"] > div {
-        border-color: #C9B8A6 !important;
-    }
-    [data-baseweb="select"] > div:focus-within {
-        border-color: #B3A18D !important;
-        box-shadow: 0 0 0 1px #B3A18D !important;
-    }
-
-    /* Selectbox — sfondo valore selezionato (globale) */
+    /* Selectbox — sfondo e bordo su tutti i livelli */
+    [data-testid="stSelectbox"] *,
+    [data-testid="stMultiSelect"] *,
+    [data-baseweb="select"],
+    [data-baseweb="select"] *,
     [data-baseweb="select"] > div,
     [data-baseweb="select"] > div > div,
-    [data-baseweb="select"] [data-baseweb="tag"],
-    div[class*="ValueContainer"],
-    div[class*="control"],
-    [data-testid="stSelectbox"] > div > div,
-    [data-testid="stMultiSelect"] > div > div {
+    [data-baseweb="select"] > div > div > div {
         background-color: #F2EDE7 !important;
+        border-color: #C9B8A6 !important;
+    }
+    [data-baseweb="select"] > div:focus-within,
+    [data-testid="stSelectbox"] > div > div:focus-within {
+        border-color: #B3A18D !important;
+        box-shadow: 0 0 0 1px #B3A18D !important;
     }
 
     /* Checkbox e radio — colore accent */
