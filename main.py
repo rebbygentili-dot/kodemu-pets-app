@@ -96,6 +96,23 @@ st.markdown(
         background-color: #bda18d94 !important;
     }
 
+    /* Voce selezionata nei menu a tendina */
+    [aria-selected="true"][data-baseweb="option"],
+    [role="option"][aria-selected="true"] {
+        background-color: #bda18d94 !important;
+    }
+
+    /* Radio button selezionato (navigazione sidebar) */
+    [data-testid="stSidebar"] [data-baseweb="radio"] input:checked + div,
+    [data-testid="stSidebar"] [role="radio"][aria-checked="true"] {
+        border-color: #B3A18D !important;
+        background-color: #bda18d94 !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) {
+        background-color: #bda18d94 !important;
+        border-radius: 6px;
+    }
+
     /* Expander */
     .streamlit-expanderHeader { font-weight: 600; }
 
