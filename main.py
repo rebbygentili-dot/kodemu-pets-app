@@ -73,16 +73,17 @@ st.markdown(
     [data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] { display: none !important; }
     [data-testid="stSidebarCollapsedControl"] { display: none !important; }
 
-    /* Bottoni primari */
-    .stButton > button[kind="primary"] {
-        background-color: #B3A18D;
-        border: none;
-        color: #fff;
-        border-radius: 8px;
-        font-weight: 600;
+    /* Tutti i bottoni */
+    .stButton > button, .stFormSubmitButton > button {
+        background-color: #B3A18D !important;
+        border: none !important;
+        color: #fff !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
     }
-    .stButton > button[kind="primary"]:hover {
-        background-color: #8A7A6A;
+    .stButton > button:hover, .stFormSubmitButton > button:hover {
+        background-color: #8A7A6A !important;
+        color: #fff !important;
     }
 
     /* Tabs */
@@ -218,8 +219,8 @@ def _sidebar_owner(profile: dict):
         f"""
         <div style="text-align:center; padding:1rem 0 0.5rem;">
             <div style="font-size:2.5rem;">🐾</div>
-            <div style="font-weight:800; font-size:1.2rem; color:#B3A18D;">Kodemu Pet</div>
-            <div style="font-size:0.8rem; color:#888; margin-top:2px;">👤 {nome}</div>
+            <div style="font-weight:800; font-size:1.2rem; color:#fff;">Kodemu Pet</div>
+            <div style="font-size:0.8rem; color:#fff; margin-top:2px;">👤 {nome}</div>
         </div>
         """,
         unsafe_allow_html=True,
@@ -254,8 +255,8 @@ def _sidebar_vet(profile: dict):
         f"""
         <div style="text-align:center; padding:1rem 0 0.5rem;">
             <div style="font-size:2.5rem;">🩺</div>
-            <div style="font-weight:800; font-size:1.2rem; color:#8A7A6A;">Kodemu Vet</div>
-            <div style="font-size:0.8rem; color:#888; margin-top:2px;">Dr. {nome} {cognome}</div>
+            <div style="font-weight:800; font-size:1.2rem; color:#fff;">Kodemu Vet</div>
+            <div style="font-size:0.8rem; color:#fff; margin-top:2px;">Dr. {nome} {cognome}</div>
         </div>
         """,
         unsafe_allow_html=True,
