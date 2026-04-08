@@ -117,6 +117,13 @@ st.markdown(
         box-shadow: 0 0 0 1px #B3A18D !important;
     }
 
+    /* Selectbox — sfondo valore selezionato */
+    [data-baseweb="select"] > div,
+    [data-baseweb="select"] [data-baseweb="tag"],
+    [data-testid="stSelectbox"] [data-baseweb="select"] > div {
+        background-color: #F2EDE7 !important;
+    }
+
     /* Checkbox e radio — colore accent */
     input[type="radio"]:checked, input[type="checkbox"]:checked {
         accent-color: #B3A18D !important;
