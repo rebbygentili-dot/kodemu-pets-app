@@ -45,6 +45,17 @@ CREATE TABLE IF NOT EXISTS public.animali (
     updated_at          TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- ── CATALOGO VACCINI ──────────────────────────────────────────────────────────
+-- Dati di riferimento (popolati da seed_vaccini.sql)
+CREATE TABLE IF NOT EXISTS public.vaccini_catalogo (
+    id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    nome        TEXT NOT NULL,
+    specie      TEXT NOT NULL CHECK (specie IN ('Cane', 'Gatto', 'Cavallo')),
+    tipo        TEXT NOT NULL CHECK (tipo IN ('obbligatorio', 'opzionale')),
+    descrizione TEXT,
+    created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ── VACCINAZIONI ──────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.vaccinazioni (
     id                      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -99,17 +110,6 @@ CREATE TABLE IF NOT EXISTS public.cartelle_cliniche (
     prescrizione_digitale   TEXT,
     note                    TEXT,
     created_at              TIMESTAMPTZ DEFAULT NOW()
-);
-
--- ── CATALOGO VACCINI ──────────────────────────────────────────────────────────
--- Dati di riferimento (popolati da seed_vaccini.sql)
-CREATE TABLE IF NOT EXISTS public.vaccini_catalogo (
-    id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    nome        TEXT NOT NULL,
-    specie      TEXT NOT NULL CHECK (specie IN ('Cane', 'Gatto', 'Cavallo')),
-    tipo        TEXT NOT NULL CHECK (tipo IN ('obbligatorio', 'opzionale')),
-    descrizione TEXT,
-    created_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ── DOCUMENTI ─────────────────────────────────────────────────────────────────
