@@ -86,9 +86,31 @@ st.markdown(
         color: #fff !important;
     }
 
-    /* Tabs */
+    /* Tabs — linea attiva e testo */
     .stTabs [data-baseweb="tab-list"] { gap: 0.5rem; }
     .stTabs [data-baseweb="tab"] { border-radius: 8px 8px 0 0; }
+    .stTabs [data-baseweb="tab"][aria-selected="true"] { color: #B3A18D !important; }
+    .stTabs [data-baseweb="tab-highlight"] { background-color: #B3A18D !important; }
+
+    /* Input e selectbox — bordo focus */
+    input:focus, textarea:focus,
+    [data-baseweb="input"]:focus-within,
+    [data-baseweb="textarea"]:focus-within,
+    [data-baseweb="select"] [data-baseweb="input"]:focus-within {
+        border-color: #B3A18D !important;
+        box-shadow: 0 0 0 1px #B3A18D !important;
+    }
+
+    /* Selectbox e multiselect — bordo */
+    [data-baseweb="select"] > div:focus-within {
+        border-color: #B3A18D !important;
+        box-shadow: 0 0 0 1px #B3A18D !important;
+    }
+
+    /* Checkbox e radio — colore accent */
+    input[type="radio"]:checked, input[type="checkbox"]:checked {
+        accent-color: #B3A18D !important;
+    }
 
     /* Hover menu a tendina (selectbox, multiselect) */
     [data-baseweb="option"]:hover,
