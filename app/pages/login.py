@@ -9,7 +9,7 @@ def show():
         """
         <div style="text-align:center; padding: 2rem 0 1rem;">
             <div style="font-size:3.5rem;">🐾</div>
-            <h1 style="font-size:2.2rem; font-weight:800; color:#2D6A4F; margin:0;">Kodemu Pet</h1>
+            <h1 style="font-size:2.2rem; font-weight:800; color:#B3A18D; margin:0;">Kodemu Pet</h1>
             <p style="color:#666; margin-top:0.3rem;">Il fascicolo sanitario digitale per il tuo animale</p>
         </div>
         """,

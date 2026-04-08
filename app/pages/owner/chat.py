@@ -57,8 +57,8 @@ def _render_chat(messaggi: list, utente_id: str):
     for m in messaggi:
         mio = m.get("mittente_id") == utente_id
         align = "flex-end" if mio else "flex-start"
-        bg = "#2D6A4F" if mio else "#F0F0F0"
-        fg = "#fff" if mio else "#1A2E22"
+        bg = "#B3A18D" if mio else "#F0F0F0"
+        fg = "#fff" if mio else "#3D3028"
         radius = "18px 18px 4px 18px" if mio else "18px 18px 18px 4px"
 
         st.markdown(

@@ -128,8 +128,8 @@ def _sezione_vaccinazioni(animale_id: str, animale: dict):
                 except Exception:
                     pass
 
-            colore = "#FDECEA" if scaduto else "#F0F7F3"
-            bordo = "#E63946" if scaduto else "#2D6A4F"
+            colore = "#FDECEA" if scaduto else "#F2EDE7"
+            bordo = "#E63946" if scaduto else "#B3A18D"
 
             scaduto_tag = "<span style='color:#E63946;font-size:0.8rem;'> ⚠️ SCADUTO</span>" if scaduto else ""
             st.markdown(

@@ -6,7 +6,7 @@ from datetime import date, datetime
 
 # ── Metriche colorate ─────────────────────────────────────────────────────────
 
-def card_metrica(titolo: str, valore: str | int, icona: str = "", colore: str = "#2D6A4F"):
+def card_metrica(titolo: str, valore: str | int, icona: str = "", colore: str = "#B3A18D"):
     st.markdown(
         f"""
         <div style="background:{colore}18; border-left:4px solid {colore};

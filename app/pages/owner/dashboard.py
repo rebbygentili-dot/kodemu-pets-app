@@ -29,9 +29,9 @@ def show():
     with col2:
         card_metrica("Prossimi appuntamenti", len(appuntamenti), "📅")
     with col3:
-        card_metrica("Vaccini in scadenza", len(scadenze), "💉", colore="#E63946" if scadenze else "#2D6A4F")
+        card_metrica("Vaccini in scadenza", len(scadenze), "💉", colore="#E63946" if scadenze else "#B3A18D")
     with col4:
-        card_metrica("Messaggi non letti", msg_non_letti, "💬", colore="#E76F51" if msg_non_letti else "#2D6A4F")
+        card_metrica("Messaggi non letti", msg_non_letti, "💬", colore="#E76F51" if msg_non_letti else "#B3A18D")
 
     divisore()
 
@@ -66,7 +66,7 @@ def show():
         for app in appuntamenti[:5]:
             st.markdown(
                 f"""
-                <div style="background:#f0f7f3; border-left:4px solid #2D6A4F;
+                <div style="background:#F2EDE7; border-left:4px solid #B3A18D;
                             padding:0.7rem 1rem; border-radius:0 8px 8px 0; margin-bottom:0.4rem;">
                     <b>{format_datetime(app.get('data_ora'))}</b> —
                     {app.get('animali', {}).get('nome', '?')} •

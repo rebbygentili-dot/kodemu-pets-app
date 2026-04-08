@@ -75,14 +75,14 @@ st.markdown(
 
     /* Bottoni primari */
     .stButton > button[kind="primary"] {
-        background-color: #2D6A4F;
+        background-color: #B3A18D;
         border: none;
         color: #fff;
         border-radius: 8px;
         font-weight: 600;
     }
     .stButton > button[kind="primary"]:hover {
-        background-color: #1B4332;
+        background-color: #8A7A6A;
     }
 
     /* Tabs */
@@ -108,7 +108,7 @@ def _pagina_reset_password(token_hash: str):
         """
         <div style="text-align:center; padding: 2rem 0 1rem;">
             <div style="font-size:3.5rem;">🔑</div>
-            <h1 style="font-size:2rem; font-weight:800; color:#2D6A4F; margin:0;">Imposta nuova password</h1>
+            <h1 style="font-size:2rem; font-weight:800; color:#B3A18D; margin:0;">Imposta nuova password</h1>
         </div>
         """,
         unsafe_allow_html=True,
@@ -147,7 +147,7 @@ def _pagina_completa_profilo(user_id: str):
         """
         <div style="text-align:center; padding: 2rem 0 1rem;">
             <div style="font-size:3.5rem;">🐾</div>
-            <h1 style="font-size:2rem; font-weight:800; color:#2D6A4F; margin:0;">Benvenuto su Kodemu Pet!</h1>
+            <h1 style="font-size:2rem; font-weight:800; color:#B3A18D; margin:0;">Benvenuto su Kodemu Pet!</h1>
             <p style="color:#666; margin-top:0.3rem;">Completa il tuo profilo per continuare.</p>
         </div>
         """,
@@ -194,7 +194,7 @@ def _sidebar_owner(profile: dict):
         f"""
         <div style="text-align:center; padding:1rem 0 0.5rem;">
             <div style="font-size:2.5rem;">🐾</div>
-            <div style="font-weight:800; font-size:1.2rem; color:#2D6A4F;">Kodemu Pet</div>
+            <div style="font-weight:800; font-size:1.2rem; color:#B3A18D;">Kodemu Pet</div>
             <div style="font-size:0.8rem; color:#888; margin-top:2px;">👤 {nome}</div>
         </div>
         """,
@@ -230,7 +230,7 @@ def _sidebar_vet(profile: dict):
         f"""
         <div style="text-align:center; padding:1rem 0 0.5rem;">
             <div style="font-size:2.5rem;">🩺</div>
-            <div style="font-weight:800; font-size:1.2rem; color:#1B4332;">Kodemu Vet</div>
+            <div style="font-weight:800; font-size:1.2rem; color:#8A7A6A;">Kodemu Vet</div>
             <div style="font-size:0.8rem; color:#888; margin-top:2px;">Dr. {nome} {cognome}</div>
         </div>
         """,

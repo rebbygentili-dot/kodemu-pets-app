@@ -32,10 +32,10 @@ def show():
         card_metrica("Appuntamenti oggi", len(app_oggi), "📅")
     with col3:
         card_metrica("Richieste collegamento", len(richieste), "🔔",
-                     colore="#E76F51" if richieste else "#2D6A4F")
+                     colore="#E76F51" if richieste else "#B3A18D")
     with col4:
         card_metrica("Messaggi non letti", msg_non_letti, "💬",
-                     colore="#E76F51" if msg_non_letti else "#2D6A4F")
+                     colore="#E76F51" if msg_non_letti else "#B3A18D")
 
     divisore()
 

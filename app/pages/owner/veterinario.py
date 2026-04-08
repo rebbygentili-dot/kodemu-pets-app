@@ -26,7 +26,7 @@ def _sezione_recensioni(vet_id: str, owner_id: str, collegato: bool):
 
     if media is not None:
         st.markdown(
-            f"<span style='font-size:1.1rem;font-weight:700;color:#2D6A4F;'>"
+            f"<span style='font-size:1.1rem;font-weight:700;color:#B3A18D;'>"
             f"{'⭐' * round(media)} {media}/5</span> "
             f"<span style='color:#888;font-size:0.85rem;'>({len(recensioni)} recensioni)</span>",
             unsafe_allow_html=True,
@@ -66,7 +66,7 @@ def _sezione_recensioni(vet_id: str, owner_id: str, collegato: bool):
             autore = r.get("profiles") or {}
             nome_autore = f"{autore.get('nome','')} {autore.get('cognome','')}".strip() or "Proprietario"
             st.markdown(
-                f'<div style="background:#F0F7F3;border-left:3px solid #2D6A4F;'
+                f'<div style="background:#F2EDE7;border-left:3px solid #B3A18D;'
                 f'padding:0.6rem 1rem;border-radius:0 8px 8px 0;margin-bottom:0.4rem;">'
                 f'<b>{_stelle(r["voto"])}</b> &nbsp; <span style="font-size:0.85rem;color:#555;">{nome_autore}</span><br>'
                 f'<span style="font-size:0.9rem;">{r.get("testo") or ""}</span>'
